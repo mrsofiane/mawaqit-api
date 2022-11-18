@@ -85,5 +85,5 @@ it's an openapi documentation generated automatically from FastApi.
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+[MIT](https://github.com/mrsofiane/mawaqit-api/blob/main/LICENSE.md)
 
