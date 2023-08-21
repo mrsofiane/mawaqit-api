@@ -11,10 +11,18 @@ def fetch_mawaqit(masjid_id):
     r = requests.get(f"https://mawaqit.net/fr/{masjid_id}")
     if r.status_code == 200:
         soup = BeautifulSoup(r.text, 'html.parser')
-        script = soup.script
-        m = re.search(r'var confData = (.*?);', script.string)
-        confData = json.loads(m.group(1))
-        return confData
+        script = soup.find('script', string=re.compile(r'var confData = (.*?);', re.DOTALL))
+        if script:
+            mawaqit = re.search(r'var confData = (.*?);', script.string, re.DOTALL)
+            if mawaqit:
+                conf_data_json = mawaqit.group(1)
+                conf_data = json.loads(conf_data_json)
+                return conf_data
+            else:
+                raise HTTPException(status_code=500, detail=f"Failed to extract confData JSON for {masjid_id}")
+        else:
+            print("Script containing confData not found.")
+            raise HTTPException(status_code=500, detail=f"Script containing confData not found for {masjid_id}")
     if r.status_code == 404:
         raise HTTPException(status_code=404, detail=f"{masjid_id} not found") 
 
@@ -31,11 +39,19 @@ def get_calendar(masjid_id):
     return confData["calendar"]
 
 def get_month(masjid_id, month_number):
+    if month_number < 1 or month_number > 12:
+        raise HTTPException(status_code=400, detail=f"Month number should be between 1 and 12")
     confData = fetch_mawaqit(masjid_id)
     month = confData["calendar"][month_number - 1]
-    month_dict = []
-    for i in range(1, len(month)+1):
-        key = str(i)
-        month_dict.append(models.PrayerTimes(fajr=month[key][0], sunset=month[key][1], dohr=month[key][2], asr=month[key][3], maghreb=month[key][4], icha=month[key][5]))
-
-    return month_dict
+    prayer_times_list = [
+        models.PrayerTimes( 
+            fajr=prayer[0],
+            sunset=prayer[1],
+            dohr=prayer[2],
+            asr=prayer[3],
+            maghreb=prayer[4],
+            icha=prayer[5]
+        )
+        for prayer in month.values()
+    ]
+    return prayer_times_list
