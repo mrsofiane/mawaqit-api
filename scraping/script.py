@@ -4,7 +4,7 @@ from fastapi import HTTPException
 
 import json
 import re
-import models
+import models.models as models
 
 
 def fetch_mawaqit(masjid_id):
