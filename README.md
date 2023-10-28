@@ -69,8 +69,10 @@ To run tests, run the following command
 ```bash
 pytest
 ```
-
-
+## Run Redis With Docker
+    ```bash
+    docker run --name mawaqit-api--redis -p 6379:6379 -d redis:alpine3.18
+    ```
 ## Documentation
 
 You can find the documentation on the path `/docs`,
@@ -78,7 +80,7 @@ it's an openapi documentation generated automatically from FastApi.
 
 ## Roadmap
 
-- Add redis database to store cache and reduce the response time, the original website use 276 ms.
+- Add redis database to store cache and reduce the response time, the original website use 276 ms. ✅
 
 - Add more api's
 
