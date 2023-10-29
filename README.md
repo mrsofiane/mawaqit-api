@@ -82,9 +82,6 @@ it's an openapi documentation generated automatically from FastApi.
 
 - Add redis database to store cache and reduce the response time, the original website use 276 ms. ✅
 
-- Add more api's
-
-
 ## License
 
 [MIT](https://github.com/mrsofiane/mawaqit-api/blob/main/LICENSE.md)
