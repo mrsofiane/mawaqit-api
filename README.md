@@ -70,9 +70,9 @@ To run tests, run the following command
 pytest
 ```
 ## Run Redis With Docker
-    ```bash
-    docker run --name mawaqit-api--redis -p 6379:6379 -d redis:alpine3.18
-    ```
+```bash
+docker run --name mawaqit-api--redis -p 6379:6379 -d redis:alpine3.18
+```
 ## Documentation
 
 You can find the documentation on the path `/docs`,
