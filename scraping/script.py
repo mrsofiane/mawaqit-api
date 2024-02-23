@@ -2,6 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 from fastapi import HTTPException
 from config.redisClient import redisClient
+from redis.exceptions import RedisError
+
 
 import json
 import re
@@ -11,12 +13,16 @@ import models.models as models
 def fetch_mawaqit(masjid_id:str):
     WEEK_IN_SECONDS = 604800
     retrieved_data = None
-    try :
-        retrieved_data = redisClient.get(masjid_id)
-    except:
-        print("error when reading from cache")
-    if(retrieved_data) :
-        return json.loads(retrieved_data)
+
+    # Check if Redis client is initialized
+    if redisClient is not None:
+        try:
+            retrieved_data = redisClient.get(masjid_id)
+        except RedisError:
+            print("Error when reading from cache")
+
+        if retrieved_data:
+            return json.loads(retrieved_data)
 
     r = requests.get(f"https://mawaqit.net/fr/{masjid_id}")
     if r.status_code == 200:
@@ -27,7 +33,9 @@ def fetch_mawaqit(masjid_id:str):
             if mawaqit:
                 conf_data_json = mawaqit.group(1)
                 conf_data = json.loads(conf_data_json)
-                redisClient.set(masjid_id, json.dumps(conf_data), ex=WEEK_IN_SECONDS)
+                # Store data in Redis if client is initialized
+                if redisClient is not None:
+                    redisClient.set(masjid_id, json.dumps(conf_data), ex=WEEK_IN_SECONDS)
                 return conf_data
             else:
                 raise HTTPException(status_code=500, detail=f"Failed to extract confData JSON for {masjid_id}")

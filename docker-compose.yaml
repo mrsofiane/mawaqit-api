@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  mawaqit-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mawaqit-api-0.1.0
+    container_name: mawaqit-api-0.1.0
+    ports:
+      - "80:80"
+    depends_on:
+      - mawaqit-api-redis
+    environment:
+      - REDIS_HOST=mawaqit-api-redis
+      - REDIS_PORT=6379
+      - USE_REDIS=true
+
+  mawaqit-api-redis:
+    image: redis:alpine3.18
+    container_name: mawaqit-api-redis
+    ports:
+      - "6379:6379"
