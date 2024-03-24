@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="description" content="Description" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0"
+    />
+    <link rel="icon" href="_media/faviconV2.png" type="image/x-icon" />
+    <link
+      rel="stylesheet"
+      href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css"
+    />
+    <style>
+      .cover.show {
+        background: linear-gradient(
+          to left bottom,
+          hsl(10, 100%, 85%) 0%,
+          hwb(223 70% 0%) 100%
+        ) !important;
+      }
+      .cover .cover-main > p:last-child a {
+        border: 1px solid #695e94 !important;
+        color: #fff !important;
+        background-color: #695e94;
+      }
+      section.cover .cover-main > p:last-child a:last-child {
+        background-color: #695e94 !important; /* Add your desired background color */
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      window.$docsify = {
+        name: "Mawaqit Api",
+        coverpage: true,
+        loadSidebar: true,
+        repo: "https://github.com/mrsofiane/mawaqit-api",
+      };
+    </script>
+    <!-- Docsify v4 -->
+    <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+  </body>
+</html>
