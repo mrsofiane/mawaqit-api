@@ -15,11 +15,10 @@ If you wish to use Redis for caching and improving response times, you can activ
    - Before running the API, ensure that Redis is installed and running on your system or a remote server.
    - Set the environment variables for Redis host and port:
      ```bash
-     export REDIS_HOST=your_redis_host
-     export REDIS_PORT=your_redis_port
+     export REDIS_URI=your_redis_uri
      export USE_REDIS=true
      ```
-     Replace `your_redis_host` and `your_redis_port` with the appropriate values for your Redis host and port.
+     Replace `your_redis_uri` with the appropriate values for your Redis uri.
    - Start the API using the following command:
      ```bash
      uvicorn main:app --host 0.0.0.0 --port 8000
@@ -32,12 +31,11 @@ If you wish to use Redis for caching and improving response times, you can activ
    - Set the environment variables when running the Docker container:
      ```bash
      docker run -d --name mawaqi-api-with-redis \
-     -e REDIS_HOST=your_redis_host \
-     -e REDIS_PORT=your_redis_port \
+     -e REDIS_URI=your_redis_uri \
      -e USE_REDIS=true \
      -p 8000:80 mawaqi-api
      ```
-   - This command runs the Docker container named `mawaqi-api-with-redis` with the specified environment variables. Ensure to replace `your_redis_host` and `your_redis_port` with your Redis host and port respectively.
+   - This command runs the Docker container named `mawaqi-api-with-redis` with the specified environment variables. Ensure to replace `your_redis_uri` with your Redis uri.
    - The API will be accessible at `http://localhost:8000`.
 
 ## Docker Compose Configuration
