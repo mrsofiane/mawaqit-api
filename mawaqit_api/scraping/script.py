@@ -7,7 +7,7 @@ from redis.exceptions import RedisError
 
 import json
 import re
-import models.models as models
+from mawaqit_api.models import models as models
 
 
 def fetch_mawaqit(masjid_id:str):

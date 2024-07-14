@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from main import app
+from mawaqit_api.main import app
 
 client = TestClient(app)
 API_ROOT= "/api/v1"

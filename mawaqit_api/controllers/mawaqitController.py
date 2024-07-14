@@ -3,8 +3,8 @@ from fastapi.encoders import jsonable_encoder
 
 from typing import List
 
-import scraping.script as script
-import models.models as models
+import mawaqit_api.scraping.script as script
+from mawaqit_api.models import models as models
 
 router = APIRouter(prefix="/api/v1")
 
@@ -30,7 +30,8 @@ def get_year_calendar(masjid_id: str):
     return {"calendar": r}
 
 
-@router.get("/{masjid_id}/calendar/{month_number}", status_code=200, summary="get the month calendar of the prayer times", response_model=List[models.PrayerTimes])
+@router.get("/{masjid_id}/calendar/{month_number}", status_code=200, summary="get the month calendar of the prayer times", response_model=List[
+    models.PrayerTimes])
 def get_month_calendar(masjid_id: str, month_number: int):
     month_dict = script.get_month(masjid_id, month_number)
     return jsonable_encoder(month_dict)
