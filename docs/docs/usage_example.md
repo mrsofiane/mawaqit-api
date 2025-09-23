@@ -26,7 +26,7 @@ The full API documentation is available at `localhost:8000/docs`.
   ```json
   {
     "fajr": "05:31",
-    "sunset": "06:45",
+    "sunrise": "06:45",
     "dohr": "13:02",
     "asr": "16:22",
     "maghreb": "19:13",
@@ -54,7 +54,7 @@ The full API documentation is available at `localhost:8000/docs`.
   [
     {
       "fajr": "05:04",
-      "sunset": "06:30",
+      "sunrise": "06:30",
       "dohr": "13:53",
       "asr": "17:48",
       "maghreb": "21:10",
@@ -65,7 +65,7 @@ The full API documentation is available at `localhost:8000/docs`.
     },
     {
       "fajr": "04:10",
-      "sunset": "05:52",
+      "sunrise": "05:52",
       "dohr": "13:53",
       "asr": "18:03",
       "maghreb": "21:48",
