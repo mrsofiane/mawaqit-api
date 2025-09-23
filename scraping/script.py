@@ -48,8 +48,8 @@ def fetch_mawaqit(masjid_id:str):
 def get_prayer_times_of_the_day(masjid_id):
     confData = fetch_mawaqit(masjid_id)
     times = confData["times"]
-    sunset = confData["shuruq"]
-    prayer_time = models.PrayerTimes(fajr=times[0], sunset=sunset, dohr=times[1], asr=times[2], maghreb=times[3], icha=times[4])
+    sunrise = confData["shuruq"]
+    prayer_time = models.PrayerTimes(fajr=times[0], sunrise=sunrise, dohr=times[1], asr=times[2], maghreb=times[3], icha=times[4])
     prayer_dict = prayer_time.dict()
     return prayer_dict
 
@@ -65,7 +65,7 @@ def get_month(masjid_id, month_number):
     prayer_times_list = [
         models.PrayerTimes( 
             fajr=prayer[0],
-            sunset=prayer[1],
+            sunrise=prayer[1],
             dohr=prayer[2],
             asr=prayer[3],
             maghreb=prayer[4],
