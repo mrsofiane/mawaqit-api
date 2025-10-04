@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl
+from typing import Optional
+from datetime import datetime
 
 class PrayerTimes(BaseModel):
     fajr: str
@@ -7,4 +9,18 @@ class PrayerTimes(BaseModel):
     asr: str
     maghreb: str
     icha: str
+
+class Announcement(BaseModel):
+    id: int
+    uuid: str
+    title: str
+    content: Optional[str] = None
+    image: Optional[HttpUrl] = None
+    video: Optional[HttpUrl] = None
+    startDate: Optional[datetime] = None
+    endDate: Optional[datetime] = None
+    updated: datetime
+    duration: Optional[int] = None
+    isMobile: bool
+    isDesktop: bool
 

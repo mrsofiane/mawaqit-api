@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from fastapi import HTTPException
 from config.redisClient import redisClient
 from redis.exceptions import RedisError
-
+from typing import List
 
 import json
 import re
@@ -74,3 +74,8 @@ def get_month(masjid_id, month_number):
         for prayer in month.values()
     ]
     return prayer_times_list
+
+def get_announcements(masjid_id: int) -> List[models.Announcement]:
+    confData = fetch_mawaqit(masjid_id)
+    announcements = confData.get("announcements", [])
+    return [models.Announcement(**a) for a in announcements]
