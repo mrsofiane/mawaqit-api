@@ -17,6 +17,11 @@ def get_raw_data(masjid_id: str):
     r = script.fetch_mawaqit(masjid_id)
     return {"rawdata": r}
 
+@router.get("/{masjid_id}/announcements", status_code=200, summary="get the announcements of a specific mosque")
+def get_raw_data(masjid_id: str):
+    r = script.get_announcements(masjid_id)
+    return r
+
 
 @router.get("/{masjid_id}/prayer-times", status_code=200, summary="get the prayer times of the current day", response_model=models.PrayerTimes)
 def get_prayer_times(masjid_id: str):
