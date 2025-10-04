@@ -18,7 +18,7 @@ def get_raw_data(masjid_id: str):
     return {"rawdata": r}
 
 @router.get("/{masjid_id}/announcements", status_code=200, summary="get the announcements of a specific mosque", response_model=List[models.Announcement])
-def get_raw_data(masjid_id: str):
+def get_announcements(masjid_id: str):
     r = script.get_announcements(masjid_id)
     return r
 

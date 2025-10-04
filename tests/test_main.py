@@ -30,3 +30,8 @@ def test_get_month_calendar():
     r_json = response.json()
     assert response.status_code == 200
     assert len(r_json) == 31
+
+def test_get_announcements():
+    response = client.get(f"{API_ROOT}/assalam-argenteuil/announcements")
+    r_json = response.json()
+    assert response.status_code == 200
