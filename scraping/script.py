@@ -24,7 +24,8 @@ def fetch_mawaqit(masjid_id:str):
         if retrieved_data:
             return json.loads(retrieved_data)
 
-    r = requests.get(f"https://mawaqit.net/fr/m/{masjid_id}")
+    url = f"https://mawaqit.net/fr/m/{masjid_id}"
+    r = requests.get(url)
     if r.status_code == 200:
         soup = BeautifulSoup(r.text, 'html.parser')
         script = soup.find('script', string=re.compile(r'var confData = (.*?);', re.DOTALL))
@@ -43,7 +44,9 @@ def fetch_mawaqit(masjid_id:str):
             print("Script containing confData not found.")
             raise HTTPException(status_code=500, detail=f"Script containing confData not found for {masjid_id}")
     if r.status_code == 404:
-        raise HTTPException(status_code=404, detail=f"{masjid_id} not found") 
+        raise HTTPException(status_code=404, detail=f"{masjid_id} not found")  
+    if r.status_code == 500:
+        raise HTTPException(status_code=502, detail=f"something went wrong fetching {url}") 
 
 def get_prayer_times_of_the_day(masjid_id):
     confData = fetch_mawaqit(masjid_id)
