@@ -22,6 +22,10 @@ def get_announcements(masjid_id: str):
     r = script.get_announcements(masjid_id)
     return r
 
+@router.get("/{masjid_id}/services", status_code=200, summary="Get the services of a specific mosque", response_model=models.MosqueServices)
+def get_services(masjid_id: str):
+    services = script.get_services(masjid_id)
+    return services
 
 @router.get("/{masjid_id}/prayer-times", status_code=200, summary="get the prayer times of the current day", response_model=models.PrayerTimes)
 def get_prayer_times(masjid_id: str):
