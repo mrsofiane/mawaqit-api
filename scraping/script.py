@@ -82,3 +82,8 @@ def get_announcements(masjid_id: int) -> List[models.Announcement]:
     confData = fetch_mawaqit(masjid_id)
     announcements = confData.get("announcements", [])
     return [models.Announcement(**a) for a in announcements]
+
+def get_services(masjid_id: int) -> models.MosqueServices:
+    confData = fetch_mawaqit(masjid_id)
+    mosque_services = models.MosqueServices(**confData)
+    return mosque_services

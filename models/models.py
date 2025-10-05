@@ -24,3 +24,14 @@ class Announcement(BaseModel):
     isMobile: bool
     isDesktop: bool
 
+class MosqueServices(BaseModel):
+    womenSpace: bool
+    janazaPrayer: bool
+    aidPrayer: bool
+    childrenCourses: bool
+    adultCourses: bool
+    ramadanMeal: bool
+    handicapAccessibility: bool
+    ablutions: bool
+    parking: bool
+
