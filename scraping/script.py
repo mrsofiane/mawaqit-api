@@ -24,7 +24,7 @@ def fetch_mawaqit(masjid_id:str):
         if retrieved_data:
             return json.loads(retrieved_data)
 
-    r = requests.get(f"https://mawaqit.net/fr/{masjid_id}")
+    r = requests.get(f"https://mawaqit.net/fr/m/{masjid_id}")
     if r.status_code == 200:
         soup = BeautifulSoup(r.text, 'html.parser')
         script = soup.find('script', string=re.compile(r'var confData = (.*?);', re.DOTALL))
@@ -50,7 +50,7 @@ def get_prayer_times_of_the_day(masjid_id):
     times = confData["times"]
     sunrise = confData["shuruq"]
     prayer_time = models.PrayerTimes(fajr=times[0], sunrise=sunrise, dohr=times[1], asr=times[2], maghreb=times[3], icha=times[4])
-    prayer_dict = prayer_time.dict()
+    prayer_dict = prayer_time.model_dump()
     return prayer_dict
 
 def get_calendar(masjid_id):
