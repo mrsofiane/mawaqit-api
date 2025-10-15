@@ -43,3 +43,8 @@ def get_year_calendar(masjid_id: str):
 def get_month_calendar(masjid_id: str, month_number: int):
     month_dict = script.get_month(masjid_id, month_number)
     return jsonable_encoder(month_dict)
+
+@router.get("/{masjid_id}/calendar-iqama/{month_number}", status_code=200, summary="get the month calendar iqama of the prayer times", response_model=List[models.IqamaPrayerTimes])
+def get_month_calendar_iqama(masjid_id: str, month_number: int):
+    month_dict = script.get_month_iqama(masjid_id, month_number)
+    return jsonable_encoder(month_dict)

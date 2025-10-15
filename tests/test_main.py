@@ -38,3 +38,9 @@ def test_get_announcements():
 def test_get_services():
     response = client.get(f"{API_ROOT}/assalam-argenteuil/services")
     assert response.status_code == 200
+
+def test_get_month_calendar_iqama():
+    response = client.get(f"{API_ROOT}/assalam-argenteuil/calendar-iqama/1")
+    r_json = response.json()
+    assert response.status_code == 200
+    assert len(r_json) == 31

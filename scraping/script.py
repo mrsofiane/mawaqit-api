@@ -78,6 +78,24 @@ def get_month(masjid_id, month_number):
     ]
     return prayer_times_list
 
+def get_month_iqama(masjid_id, month_number):
+    if month_number < 1 or month_number > 12:
+        raise HTTPException(status_code=400, detail=f"Month number should be between 1 and 12")
+    confData = fetch_mawaqit(masjid_id)
+    month = confData["iqamaCalendar"][month_number - 1]
+    iqama_times_list = [
+        models.IqamaPrayerTimes( 
+            fajr=iqama[0],
+            dohr=iqama[1],
+            asr=iqama[2],
+            maghreb=iqama[3],
+            icha=iqama[4]
+        )
+        for iqama in month.values()
+    ]
+
+    return iqama_times_list
+
 def get_announcements(masjid_id: int) -> List[models.Announcement]:
     confData = fetch_mawaqit(masjid_id)
     announcements = confData.get("announcements", [])
