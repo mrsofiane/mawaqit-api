@@ -10,6 +10,14 @@ class PrayerTimes(BaseModel):
     maghreb: str
     icha: str
 
+class IqamaPrayerTimes(BaseModel):
+    fajr: str
+    dohr: str
+    asr: str
+    maghreb: str
+    icha: str
+
+
 class Announcement(BaseModel):
     id: int
     uuid: str
