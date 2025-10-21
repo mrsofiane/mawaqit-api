@@ -1,0 +1,34 @@
+name: Deploy Docker Image to Docker Hub
+
+on:
+  push:
+    tags:
+      - 'v*'  # only run when you push a version tag, e.g. v1.0.0
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract version from tag
+        id: vars
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/mawaqit-api:${{ env.VERSION }} .
+          docker tag ${{ secrets.DOCKERHUB_USERNAME }}/mawaqit-api:${{ env.VERSION }} ${{ secrets.DOCKERHUB_USERNAME }}/mawaqit-api:latest
+
+      - name: Push Docker image
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/mawaqit-api:${{ env.VERSION }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/mawaqit-api:latest
