@@ -1,9 +1,5 @@
 import os
 from redis import Redis
-from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
 
 # Read the environment variable USE_REDIS
 USE_REDIS = os.getenv('USE_REDIS', 'False').lower() == 'true'
