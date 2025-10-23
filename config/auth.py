@@ -9,7 +9,7 @@ security = HTTPBearer(auto_error=False)
 
 def get_bearer_token() -> str:
     """Get the expected bearer token from environment variables"""
-    auth_enabled = os.getenv("USE_AUTH", "false").lower() == "true"
+    auth_enabled = os.getenv("ENABLE_AUTH", "false").lower() == "true"
     if not auth_enabled:
         return None
 

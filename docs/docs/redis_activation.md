@@ -16,7 +16,7 @@ If you wish to use Redis for caching and improving response times, you can activ
    - Set the environment variables for Redis host and port:
      ```bash
      export REDIS_URI=your_redis_uri
-     export USE_REDIS=true
+     export ENABLE_REDIS=true
      ```
      Replace `your_redis_uri` with the appropriate values for your Redis uri.
    - Start the API using the following command:
@@ -32,7 +32,7 @@ If you wish to use Redis for caching and improving response times, you can activ
      ```bash
      docker run -d --name mawaqi-api-with-redis \
      -e REDIS_URI=your_redis_uri \
-     -e USE_REDIS=true \
+     -e ENABLE_REDIS=true \
      -p 8000:80 mawaqi-api
      ```
    - This command runs the Docker container named `mawaqi-api-with-redis` with the specified environment variables. Ensure to replace `your_redis_uri` with your Redis uri.

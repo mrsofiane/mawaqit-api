@@ -6,7 +6,7 @@ from main import app
 client = TestClient(app)
 API_ROOT = "/api/v1"
 
-AUTH_ENABLED = os.getenv("USE_AUTH", "false").lower() == "true"
+AUTH_ENABLED = os.getenv("ENABLE_AUTH", "false").lower() == "true"
 BEARER_TOKEN = (
     os.getenv("BEARER_TOKEN", "test-token-for-testing") if AUTH_ENABLED else None
 )
