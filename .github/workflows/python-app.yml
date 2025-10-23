@@ -34,10 +34,3 @@ jobs:
     - name: Test with pytest with no auth 
       run: |
         pytest
-    
-    - name: Test with pytest with auth
-      env:
-        ENABLE_AUTH: "True"
-        BEARER_TOKEN: "testtoken123"
-      run: |
-        pytest

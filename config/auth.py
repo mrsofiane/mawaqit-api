@@ -3,22 +3,17 @@ Bearer token authentication using FastAPI security dependencies
 """
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-import os
 
+from config.settings import settings
 security = HTTPBearer(auto_error=False)
 
 def get_bearer_token() -> str:
     """Get the expected bearer token from environment variables"""
-    auth_enabled = os.getenv("ENABLE_AUTH", "false").lower() == "true"
+    auth_enabled = settings.ENABLE_AUTH
     if not auth_enabled:
         return None
 
-    bearer_token = os.getenv("BEARER_TOKEN", "")
-    if not bearer_token:
-        raise ValueError(
-            "ENABLE_AUTH is set to true but BEARER_TOKEN environment variable is not set. "
-            "Please configure BEARER_TOKEN in your .env file."
-        )
+    bearer_token = settings.BEARER_TOKEN
     return bearer_token
 
 def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)) -> str:

@@ -1,18 +1,26 @@
 from fastapi.testclient import TestClient
-import os
 
 from main import app
+from config.settings import settings
 
 client = TestClient(app)
 API_ROOT = "/api/v1"
 
-AUTH_ENABLED = os.getenv("ENABLE_AUTH", "false").lower() == "true"
-BEARER_TOKEN = (
-    os.getenv("BEARER_TOKEN", "test-token-for-testing") if AUTH_ENABLED else None
-)
-HEADERS = (
-    {"Authorization": f"Bearer {BEARER_TOKEN}"} if AUTH_ENABLED and BEARER_TOKEN else {}
-)
+
+def _apply_settings(monkeypatch, enable_auth=False, bearer_token=None):
+    """
+    Hilfsfunktion: patched settings für Tests.
+    """
+    monkeypatch.setattr(settings, "ENABLE_AUTH", enable_auth, raising=False)
+    monkeypatch.setattr(settings, "BEARER_TOKEN", bearer_token, raising=False)
+
+
+def _auth_header():
+    return (
+        {"Authorization": f"Bearer {settings.BEARER_TOKEN}"}
+        if getattr(settings, "ENABLE_AUTH", False) and getattr(settings, "BEARER_TOKEN", None)
+        else {}
+    )
 
 
 def test_read_root():
@@ -24,24 +32,25 @@ def test_read_root():
     }
 
 
-def test_missing_bearer_token():
-    """Requests without bearer token should return 401 only if auth is enabled"""
+def test_missing_bearer_token_when_auth_enabled(monkeypatch):
+    """Wenn Auth aktiviert ist, sollten Anfragen ohne Token 401 zurückgeben"""
+    _apply_settings(monkeypatch, enable_auth=True, bearer_token="test-secret")
     response = client.get(f"{API_ROOT}/assalam-argenteuil/prayer-times")
-    if AUTH_ENABLED:
-        assert response.status_code == 401
-        assert (
-            "Authorization" in response.json()["detail"]
-            or "bearer" in response.json()["detail"].lower()
-        )
-    else:
-        assert response.status_code == 200
+    assert response.status_code == 401
+    detail = response.json().get("detail", "")
+    assert "Authorization" in detail or "bearer" in str(detail).lower()
 
 
-def test_invalid_bearer_token():
-    """Requests with invalid bearer token should return 401 only if auth is enabled"""
-    if not AUTH_ENABLED:
-        return
+def test_missing_bearer_token_when_auth_disabled(monkeypatch):
+    """Wenn Auth deaktiviert ist, sollten Anfragen ohne Token 200 zurückgeben"""
+    _apply_settings(monkeypatch, enable_auth=False, bearer_token=None)
+    response = client.get(f"{API_ROOT}/assalam-argenteuil/prayer-times")
+    assert response.status_code == 200
 
+
+def test_invalid_bearer_token(monkeypatch):
+    """Ungültiges Token sollte 401 zurückgeben, wenn Auth aktiviert ist"""
+    _apply_settings(monkeypatch, enable_auth=True, bearer_token="valid-token")
     response = client.get(
         f"{API_ROOT}/assalam-argenteuil/prayer-times",
         headers={"Authorization": "Bearer invalid-token"},
@@ -49,51 +58,51 @@ def test_invalid_bearer_token():
     assert response.status_code == 401
 
 
-def test_get_prayer_times():
+def test_get_prayer_times(monkeypatch):
     """Prayer times endpoint"""
-    response = client.get(
-        f"{API_ROOT}/assalam-argenteuil/prayer-times", headers=HEADERS
-    )
+    _apply_settings(monkeypatch, enable_auth=True, bearer_token="valid-token")
+    response = client.get(f"{API_ROOT}/assalam-argenteuil/prayer-times", headers=_auth_header())
     r_json = response.json()
     assert response.status_code == 200
     assert len(r_json) == 6
 
 
-def test_get_year_calendar():
+def test_get_year_calendar(monkeypatch):
     """Year calendar endpoint"""
-    response = client.get(f"{API_ROOT}/assalam-argenteuil/calendar", headers=HEADERS)
+    _apply_settings(monkeypatch, enable_auth=True, bearer_token="valid-token")
+    response = client.get(f"{API_ROOT}/assalam-argenteuil/calendar", headers=_auth_header())
     r_json = response.json()
     assert response.status_code == 200
     assert len(r_json["calendar"]) == 12
 
 
-def test_get_month_calendar():
+def test_get_month_calendar(monkeypatch):
     """Month calendar endpoint"""
-    response = client.get(f"{API_ROOT}/assalam-argenteuil/calendar/1", headers=HEADERS)
+    _apply_settings(monkeypatch, enable_auth=True, bearer_token="valid-token")
+    response = client.get(f"{API_ROOT}/assalam-argenteuil/calendar/1", headers=_auth_header())
     r_json = response.json()
     assert response.status_code == 200
     assert len(r_json) == 31
 
 
-def test_get_announcements():
+def test_get_announcements(monkeypatch):
     """Announcements endpoint"""
-    response = client.get(
-        f"{API_ROOT}/assalam-argenteuil/announcements", headers=HEADERS
-    )
+    _apply_settings(monkeypatch, enable_auth=True, bearer_token="valid-token")
+    response = client.get(f"{API_ROOT}/assalam-argenteuil/announcements", headers=_auth_header())
     assert response.status_code == 200
 
 
-def test_get_services():
+def test_get_services(monkeypatch):
     """Services endpoint"""
-    response = client.get(f"{API_ROOT}/assalam-argenteuil/services", headers=HEADERS)
+    _apply_settings(monkeypatch, enable_auth=True, bearer_token="valid-token")
+    response = client.get(f"{API_ROOT}/assalam-argenteuil/services", headers=_auth_header())
     assert response.status_code == 200
 
 
-def test_get_month_calendar_iqama():
+def test_get_month_calendar_iqama(monkeypatch):
     """Month calendar iqama endpoint"""
-    response = client.get(
-        f"{API_ROOT}/assalam-argenteuil/calendar-iqama/1", headers=HEADERS
-    )
+    _apply_settings(monkeypatch, enable_auth=True, bearer_token="valid-token")
+    response = client.get(f"{API_ROOT}/assalam-argenteuil/calendar-iqama/1", headers=_auth_header())
     r_json = response.json()
     assert response.status_code == 200
     assert len(r_json) == 31
