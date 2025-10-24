@@ -24,8 +24,13 @@ There are multiple ways to install and deploy the Mawaqi API depending on your p
 
 Choose the installation method that best suits your environment and preferences.
 
+> **⚠️ Important:** If you are **self-hosting** this API, it is **highly recommended to enable bearer token authentication** to protect your instance. See the [Security & Authentication](/docs/security.md) guide for details.
+
 **API Documentation:**
 
 You can find the API documentation at the path `/docs` relative to your API's base URL. It's an OpenAPI documentation generated automatically from FastAPI.
 
-[Activating Redis](/docs/redis_activation.md)
+## Next Steps
+
+- [Security & Authentication Setup](/docs/security.md)
+- [Activating Redis](/docs/redis_activation.md)
