@@ -1,3 +1,5 @@
+from hashlib import sha256
+
 from fastapi.testclient import TestClient
 
 from main import app
@@ -106,3 +108,50 @@ def test_get_month_calendar_iqama(monkeypatch):
     r_json = response.json()
     assert response.status_code == 200
     assert len(r_json) == 31
+
+
+def test_calendar_ics_headers_and_body(monkeypatch):
+    _apply_settings(monkeypatch, enable_auth=False)
+    response = client.get(f"{API_ROOT}/assalam-argenteuil/calendar.ics")
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/calendar")
+    assert 'inline; filename="assalam-argenteuil.ics"' in response.headers["content-disposition"]
+    assert response.headers["cache-control"] == "public, max-age=3600"
+    body = response.text
+    assert body.startswith("BEGIN:VCALENDAR")
+    assert "BEGIN:VEVENT" in body
+    expected_etag = f'"{sha256(body.encode("utf-8")).hexdigest()}"'
+    assert response.headers["etag"] == expected_etag
+
+
+def test_calendar_iqama_ics(monkeypatch):
+    _apply_settings(monkeypatch, enable_auth=False)
+    response = client.get(f"{API_ROOT}/assalam-argenteuil/calendar-iqama.ics")
+    assert response.status_code == 200
+    assert "Iqama" in response.text
+    assert "shuruk" not in response.text
+
+
+def test_calendar_ics_requires_auth_or_query_token(monkeypatch):
+    _apply_settings(monkeypatch, enable_auth=True, bearer_token="secret-token")
+    denied = client.get(f"{API_ROOT}/assalam-argenteuil/calendar.ics")
+    assert denied.status_code == 401
+
+    via_query = client.get(f"{API_ROOT}/assalam-argenteuil/calendar.ics?token=secret-token")
+    assert via_query.status_code == 200
+    assert via_query.text.startswith("BEGIN:VCALENDAR")
+
+    via_header = client.get(
+        f"{API_ROOT}/assalam-argenteuil/calendar.ics",
+        headers={"Authorization": "Bearer secret-token"},
+    )
+    assert via_header.status_code == 200
+
+
+def test_calendar_ics_duration_validation(monkeypatch):
+    _apply_settings(monkeypatch, enable_auth=False)
+    assert client.get(f"{API_ROOT}/assalam-argenteuil/calendar.ics?duration=0").status_code == 422
+    assert client.get(f"{API_ROOT}/assalam-argenteuil/calendar.ics?duration=181").status_code == 422
+    ok = client.get(f"{API_ROOT}/assalam-argenteuil/calendar.ics?duration=10&include_shuruk=true")
+    assert ok.status_code == 200
+    assert "Shuruk" in ok.text
