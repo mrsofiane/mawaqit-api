@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from fastapi.encoders import jsonable_encoder
 
 from typing import List
 
 import scraping.script as script
+import scraping.search as search
 import models.models as models
 from config.auth import verify_token
 
@@ -12,6 +13,11 @@ router = APIRouter(prefix="/api/v1")
 @router.get("/", summary="Greetings")
 def read_root():
     return {"Greetings": "Hello and Welcome to this Api, this api use the mawaqit.net as data source of prayers time in more than 8000 masjid, this api can be used to fetch data in json, you can find our docs on /docs. "}
+
+# declared before the /{masjid_id}/ routes so "search" is not taken as a masjid id
+@router.get("/search", status_code=200, summary="search mosques by name or city (requires SEARXNG_URL)", response_model=List[models.MosqueSearchResult])
+def search_mosques(q: str = Query(..., min_length=2), limit: int = Query(10, ge=1, le=50), _: str = Depends(verify_token)):
+    return search.search_mosques(q, limit)
 
 @router.get("/{masjid_id}/", status_code=200, summary="get the raw data from mawaqit website")
 def get_raw_data(masjid_id: str, _: str = Depends(verify_token)):

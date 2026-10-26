@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     ENABLE_AUTH: bool = False
     BEARER_TOKEN: Optional[str] = None
 
+    # Mosque search (optional), url of a SearXNG instance with the json format enabled
+    SEARXNG_URL: Optional[str] = None
+
     @model_validator(mode="after")
     def _check_auth(self):
         if self.ENABLE_AUTH and not self.BEARER_TOKEN:
