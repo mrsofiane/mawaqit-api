@@ -23,12 +23,19 @@ jobs:
         id: vars
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
-      - name: Build Docker image
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/mawaqit-api:${{ env.VERSION }} .
-          docker tag ${{ secrets.DOCKERHUB_USERNAME }}/mawaqit-api:${{ env.VERSION }} ${{ secrets.DOCKERHUB_USERNAME }}/mawaqit-api:latest
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
-      - name: Push Docker image
-        run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/mawaqit-api:${{ env.VERSION }}
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/mawaqit-api:latest
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # build for amd64 and arm64 (e.g. Raspberry Pi, Apple Silicon, ARM cloud servers)
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/mawaqit-api:${{ env.VERSION }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/mawaqit-api:latest
