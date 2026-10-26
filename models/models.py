@@ -43,3 +43,7 @@ class MosqueServices(BaseModel):
     ablutions: bool
     parking: bool
 
+class MosqueSearchResult(BaseModel):
+    slug: str
+    name: str
+    url: str

@@ -4,6 +4,7 @@
   - [Installation](/docs/installation.md)
   - [Security & Authentication](/docs/security.md)
   - [Activating Redis](/docs/redis_activation.md)
+  - [Searching Mosques](/docs/search.md)
 
 - Usage Examples
   - [API Usage Example](/docs/usage_example.md)
