@@ -94,6 +94,16 @@ def get_calendar(masjid_id):
     confData = fetch_mawaqit(masjid_id)
     return confData["calendar"]
 
+def get_mosque_calendar(masjid_id: str) -> dict:
+    """Return mosque metadata and year calendars needed for iCalendar export."""
+    confData = fetch_mawaqit(masjid_id)
+    return {
+        "name": confData.get("name", masjid_id),
+        "timezone": confData.get("timezone"),
+        "calendar": confData["calendar"],
+        "iqamaCalendar": confData.get("iqamaCalendar", []),
+    }
+
 def get_month(masjid_id, month_number):
     if month_number < 1 or month_number > 12:
         raise HTTPException(status_code=400, detail=f"Month number should be between 1 and 12")

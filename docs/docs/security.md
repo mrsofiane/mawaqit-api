@@ -64,6 +64,17 @@ These endpoints are **always accessible** without authentication:
 - `/openapi.json` - OpenAPI schema
 - `/redoc` - ReDoc documentation
 
+### iCalendar Feed Authentication
+
+JSON endpoints require the `Authorization: Bearer` header when auth is enabled.
+
+The iCalendar subscribe endpoints accept **either** the Bearer header **or** a `?token=` query parameter, because Apple Calendar and Google Calendar cannot send custom auth headers:
+
+- `GET /api/v1/{masjid_id}/calendar.ics?token=YOUR_TOKEN`
+- `GET /api/v1/{masjid_id}/calendar-iqama.ics?token=YOUR_TOKEN`
+
+Treat subscribe URLs that embed `token` as secrets: they appear in server logs, browser history, and shared calendar links.
+
 ### Error Responses
 
 **Missing Authorization Header:**
