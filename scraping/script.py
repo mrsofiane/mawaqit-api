@@ -4,6 +4,8 @@ from fastapi import HTTPException
 from config.redisClient import redisClient
 from redis.exceptions import RedisError
 from typing import List
+import datetime
+from datetime import datetime, timedelta
 
 import json
 import re
@@ -56,6 +58,37 @@ def get_prayer_times_of_the_day(masjid_id):
     prayer_time = models.PrayerTimes(fajr=times[0], sunrise=sunrise, dohr=times[1], asr=times[2], maghreb=times[3], icha=times[4])
     prayer_dict = prayer_time.model_dump()
     return prayer_dict
+
+def get_next_day_prayers(confData):
+    next_month = int((datetime.today() + timedelta(+1)).strftime('%m')) - 1
+    next_day = (datetime.today() + timedelta(+1)).strftime('%-d')
+    calendar = confData["calendar"]
+    monthly_times = calendar[next_month]
+    next_day_times = monthly_times[next_day]
+    return models.PrayerTimes(
+        fajr=next_day_times[0],
+        sunrise=next_day_times[1],
+        dohr=next_day_times[2],
+        asr=next_day_times[3],
+        maghreb=next_day_times[4],
+        icha=next_day_times[5],
+    )
+
+def get_next_prayer_times_of_the_day(masjid_id):
+    now = datetime.now().strftime("%H:%M")
+    confData = fetch_mawaqit(masjid_id)
+    times = confData["times"]
+    next_day_prayer_time = get_next_day_prayers(confData)
+    next_day_prayer_time = dict(next_day_prayer_time)
+    sunrise = confData["shuruq"]
+    prayer_time = models.PrayerTimes(fajr=times[0], sunrise=sunrise, dohr=times[1], asr=times[2], maghreb=times[3], icha=times[4])
+    prayer_time = dict(prayer_time)
+    for n, value in prayer_time.items():
+        if value < now:
+            prayer_time[n] = next_day_prayer_time[n]
+        else: value
+    #prayer_dict = prayer_time.model_dump()
+    return prayer_time
 
 def get_calendar(masjid_id):
     confData = fetch_mawaqit(masjid_id)

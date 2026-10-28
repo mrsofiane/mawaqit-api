@@ -33,6 +33,11 @@ def get_prayer_times(masjid_id: str, _: str = Depends(verify_token)):
     prayer_times = script.get_prayer_times_of_the_day(masjid_id)
     return prayer_times
 
+@router.get("/{masjid_id}/next-prayer-times", status_code=200, summary="Get the next prayer time once the time prayer is passed")#,  #response_model=models.PrayerTimes)
+def get_next_prayer_times(masjid_id: str, _: str = Depends(verify_token)):
+    prayer_times = script.get_next_prayer_times_of_the_day(masjid_id)
+    return prayer_times
+
 
 @router.get("/{masjid_id}/calendar", status_code=200, summary="get the year calendar of the prayer times")
 def get_year_calendar(masjid_id: str, _: str = Depends(verify_token)):

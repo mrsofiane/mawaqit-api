@@ -66,6 +66,14 @@ def test_get_prayer_times(monkeypatch):
     assert response.status_code == 200
     assert len(r_json) == 6
 
+def test_get_next_prayer_times(monkeypatch):
+    """Get next time prayer when prayer is passed"""
+    _apply_settings(monkeypatch, enable_auth=True, bearer_token="valid-token")
+    response = client.get(f"{API_ROOT}/tarn-graulhet/next-prayer-times", headers=_auth_header())
+    r_json = response.json()
+    assert response.status_code == 200
+    assert len(r_json) == 6
+
 
 def test_get_year_calendar(monkeypatch):
     """Year calendar endpoint"""
